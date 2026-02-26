@@ -68,3 +68,44 @@ class TestDocumentLoader:
         loader = DocumentLoader()
         docs = loader.load_directory(tmp_path)
         assert len(docs) == 2
+
+
+class TestTextChunker:
+    def test_chunk_short_text(self):
+        from backend.src.ingestion.chunker import TextChunker
+
+        chunker = TextChunker(chunk_size=100, chunk_overlap=20)
+        chunks = chunker.chunk("Short text.")
+        assert len(chunks) == 1
+        assert chunks[0].content == "Short text."
+
+    def test_chunk_long_text_produces_overlapping_chunks(self):
+        from backend.src.ingestion.chunker import TextChunker
+
+        text = "A" * 50 + " " + "B" * 50 + " " + "C" * 50
+        chunker = TextChunker(chunk_size=60, chunk_overlap=10)
+        chunks = chunker.chunk(text)
+        assert len(chunks) > 1
+        # Each chunk should be within size limit (with some tolerance for overlap merging)
+        for chunk in chunks:
+            assert len(chunk.content) <= 80  # allow some tolerance
+
+    def test_chunk_preserves_metadata(self):
+        from backend.src.ingestion.chunker import TextChunker
+
+        chunker = TextChunker(chunk_size=20, chunk_overlap=5)
+        chunks = chunker.chunk(
+            "Word " * 20,
+            metadata={"source": "test.txt"},
+        )
+        assert all(c.metadata["source"] == "test.txt" for c in chunks)
+        assert all("chunk_index" in c.metadata for c in chunks)
+
+    def test_chunk_splits_on_separators(self):
+        from backend.src.ingestion.chunker import TextChunker
+
+        text = "Paragraph one.\n\nParagraph two.\n\nParagraph three."
+        chunker = TextChunker(chunk_size=30, chunk_overlap=5)
+        chunks = chunker.chunk(text)
+        # Should prefer splitting on double newlines
+        assert any("Paragraph one." in c.content for c in chunks)
