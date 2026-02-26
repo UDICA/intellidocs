@@ -26,3 +26,47 @@ class TestReranker:
         ]
         reranked = reranker.rerank(query="test", results=results, top_k=1)
         assert reranked[0].metadata["source"] == "test.txt"
+
+
+class TestHybridRetriever:
+    @pytest.fixture
+    def retriever_with_data(self):
+        from backend.src.embeddings.embedder import Embedder
+        from backend.src.retrieval.reranker import Reranker
+        from backend.src.retrieval.retriever import HybridRetriever
+        from backend.src.vectorstore.qdrant_store import QdrantStore
+
+        embedder = Embedder(model_name="all-MiniLM-L6-v2")
+        store = QdrantStore(host=None, port=None, collection_name="test_retriever")
+        store.initialize(dimension=embedder.dimension)
+        reranker = Reranker()
+
+        texts = [
+            "Python is a high-level programming language.",
+            "Machine learning uses algorithms to learn from data.",
+            "The Eiffel Tower is located in Paris, France.",
+        ]
+        dense = embedder.embed(texts)
+        sparse = embedder.sparse_embed(texts)
+        store.upsert(
+            ids=["d1", "d2", "d3"],
+            contents=texts,
+            dense_vectors=dense,
+            sparse_vectors=sparse,
+            metadatas=[{"source": f"doc{i}.txt"} for i in range(3)],
+        )
+
+        return HybridRetriever(
+            embedder=embedder,
+            vector_store=store,
+            reranker=reranker,
+        )
+
+    def test_retrieve_returns_relevant_results(self, retriever_with_data):
+        results = retriever_with_data.retrieve("What is Python?", top_k=2)
+        assert len(results) > 0
+        assert "Python" in results[0].content
+
+    def test_retrieve_respects_top_k(self, retriever_with_data):
+        results = retriever_with_data.retrieve("programming", top_k=1)
+        assert len(results) == 1
