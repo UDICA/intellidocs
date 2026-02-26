@@ -1,6 +1,3 @@
-import pytest
-
-
 class TestEmbedder:
     def test_embed_single_text(self):
         from backend.src.embeddings.embedder import Embedder
@@ -19,12 +16,13 @@ class TestEmbedder:
         assert all(len(v) == 384 for v in vectors)
 
     def test_embed_returns_normalized_vectors(self):
-        import math
+        from math import sqrt
+
         from backend.src.embeddings.embedder import Embedder
 
         embedder = Embedder(model_name="all-MiniLM-L6-v2")
         vectors = embedder.embed(["Test normalization"])
-        magnitude = math.sqrt(sum(x * x for x in vectors[0]))
+        magnitude = sqrt(sum(x * x for x in vectors[0]))
         assert abs(magnitude - 1.0) < 0.01
 
     def test_sparse_embed(self):
