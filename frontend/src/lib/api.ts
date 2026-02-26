@@ -3,7 +3,8 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 export async function* streamChat(
   query: string,
   conversationHistory: { role: string; content: string }[],
-  topK?: number
+  topK?: number,
+  scoreThreshold?: number
 ): AsyncGenerator<{ event: string; data: Record<string, unknown> }> {
   const response = await fetch(`${API_BASE}/api/chat`, {
     method: "POST",
@@ -12,6 +13,7 @@ export async function* streamChat(
       query,
       conversation_history: conversationHistory,
       top_k: topK,
+      score_threshold: scoreThreshold,
     }),
   });
 

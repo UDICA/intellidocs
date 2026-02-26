@@ -98,6 +98,12 @@ class ChromaStore(VectorStoreBase):
         """Delete documents by their IDs."""
         self.collection.delete(ids=ids)
 
+    def delete_by_metadata(self, key: str, value: str) -> None:
+        """Delete all documents whose metadata field ``key`` equals ``value``."""
+        results = self.collection.get(where={key: value})
+        if results["ids"]:
+            self.collection.delete(ids=results["ids"])
+
     # ------------------------------------------------------------------
     # Introspection
     # ------------------------------------------------------------------

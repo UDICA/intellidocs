@@ -20,6 +20,7 @@ class ChatRequest(BaseModel):
     query: str
     conversation_history: list[dict[str, str]] = Field(default_factory=list)
     top_k: int | None = None
+    score_threshold: float | None = None
 
 
 @router.post("/api/chat")
@@ -30,13 +31,18 @@ async def chat(
 ) -> EventSourceResponse:
     """Chat endpoint with SSE streaming. Sends sources first, then streams tokens."""
     top_k = request.top_k or settings.TOP_K
+    score_threshold = (
+        request.score_threshold
+        if request.score_threshold is not None
+        else settings.SIMILARITY_THRESHOLD
+    )
 
     async def event_generator():
         # Step 1: Retrieve sources
         sources = rag_chain.retrieve_sources(
             query=request.query,
             top_k=top_k,
-            score_threshold=settings.SIMILARITY_THRESHOLD,
+            score_threshold=score_threshold,
         )
 
         # Send sources event

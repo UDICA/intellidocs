@@ -21,9 +21,9 @@ export default function Home() {
 
   const handleSend = useCallback(
     (message: string) => {
-      sendMessage(message, topK);
+      sendMessage(message, topK, scoreThreshold);
     },
-    [sendMessage, topK]
+    [sendMessage, topK, scoreThreshold]
   );
 
   const handleUploadComplete = useCallback(() => {

@@ -10,7 +10,7 @@ test process.
 from __future__ import annotations
 
 import json
-from unittest.mock import AsyncMock, patch
+from unittest.mock import patch
 
 import pytest
 from fastapi.testclient import TestClient
@@ -294,7 +294,9 @@ class TestChatEndpoint:
 
     def test_chat_sse_tokens_form_coherent_answer(self, client):
         """Verify that all streamed token events concatenate into the expected answer."""
-        _upload_txt(client, "ai.txt", b"Artificial intelligence is a broad field of computer science.")
+        _upload_txt(
+            client, "ai.txt", b"Artificial intelligence is a broad field of computer science."
+        )
 
         expected_tokens = ["AI", " is", " fascinating", "."]
 

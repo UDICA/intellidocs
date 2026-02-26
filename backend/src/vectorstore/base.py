@@ -46,6 +46,10 @@ class VectorStoreBase(ABC):
         """Delete documents by their IDs."""
 
     @abstractmethod
+    def delete_by_metadata(self, key: str, value: str) -> None:
+        """Delete all documents matching a metadata field value."""
+
+    @abstractmethod
     def count(self) -> int:
         """Return the number of documents in the store."""
 

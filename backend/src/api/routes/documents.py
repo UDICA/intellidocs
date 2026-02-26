@@ -59,5 +59,5 @@ def delete_document(
     vector_store: VectorStoreBase = Depends(get_vector_store),
 ) -> dict:
     """Delete a document and all its chunks from the vector store."""
-    vector_store.delete(ids=[document_id])
+    vector_store.delete_by_metadata("document_id", document_id)
     return {"status": "deleted", "document_id": document_id}

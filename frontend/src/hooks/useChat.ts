@@ -86,7 +86,7 @@ export function useChat() {
   messagesRef.current = state.messages;
 
   const sendMessage = useCallback(
-    async (content: string, topK?: number) => {
+    async (content: string, topK?: number, scoreThreshold?: number) => {
       const history = messagesRef.current.map((m) => ({
         role: m.role,
         content: m.content,
@@ -99,7 +99,8 @@ export function useChat() {
         for await (const { event, data } of streamChat(
           content,
           history,
-          topK
+          topK,
+          scoreThreshold
         )) {
           if (event === "sources") {
             dispatch({

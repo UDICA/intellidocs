@@ -140,6 +140,17 @@ class QdrantStore(VectorStoreBase):
             points_selector=point_ids,
         )
 
+    def delete_by_metadata(self, key: str, value: str) -> None:
+        """Delete all points whose payload field ``key`` equals ``value``."""
+        from qdrant_client.models import FieldCondition, Filter, MatchValue
+
+        self.client.delete(
+            collection_name=self.collection_name,
+            points_selector=Filter(
+                must=[FieldCondition(key=key, match=MatchValue(value=value))]
+            ),
+        )
+
     # ------------------------------------------------------------------
     # Introspection
     # ------------------------------------------------------------------
