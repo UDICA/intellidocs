@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Qdrant data
+qdrant_data/
+
+# Node
+node_modules/
+.next/
+out/
+
+# Test / Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Data (keep sample_docs)
+data/uploads/
