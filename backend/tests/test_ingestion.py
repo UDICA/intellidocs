@@ -109,3 +109,48 @@ class TestTextChunker:
         chunks = chunker.chunk(text)
         # Should prefer splitting on double newlines
         assert any("Paragraph one." in c.content for c in chunks)
+
+
+class TestIngestionProcessor:
+    def test_process_single_file(self, sample_txt: Path):
+        from backend.src.embeddings.embedder import Embedder
+        from backend.src.ingestion.processor import IngestionProcessor
+        from backend.src.vectorstore.qdrant_store import QdrantStore
+
+        store = QdrantStore(host=None, port=None, collection_name="test_ingest")
+        embedder = Embedder(model_name="all-MiniLM-L6-v2")
+        store.initialize(dimension=embedder.dimension)
+
+        processor = IngestionProcessor(
+            embedder=embedder,
+            vector_store=store,
+            chunk_size=100,
+            chunk_overlap=20,
+        )
+        doc_id = processor.process_file(sample_txt)
+
+        assert doc_id is not None
+        assert store.count() > 0
+
+    def test_process_directory(self, tmp_path: Path):
+        from backend.src.embeddings.embedder import Embedder
+        from backend.src.ingestion.processor import IngestionProcessor
+        from backend.src.vectorstore.qdrant_store import QdrantStore
+
+        (tmp_path / "a.txt").write_text("Document A content here, some text to process.")
+        (tmp_path / "b.txt").write_text("Document B content here, different text.")
+
+        store = QdrantStore(host=None, port=None, collection_name="test_ingest_dir")
+        embedder = Embedder(model_name="all-MiniLM-L6-v2")
+        store.initialize(dimension=embedder.dimension)
+
+        processor = IngestionProcessor(
+            embedder=embedder,
+            vector_store=store,
+            chunk_size=100,
+            chunk_overlap=20,
+        )
+        count = processor.process_directory(tmp_path)
+
+        assert count == 2
+        assert store.count() > 0
