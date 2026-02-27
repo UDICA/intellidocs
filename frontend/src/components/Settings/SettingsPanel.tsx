@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { healthCheck } from "@/lib/api";
 
 interface SettingsPanelProps {
   topK: number;
@@ -75,6 +76,16 @@ export default function SettingsPanel({
   scoreThreshold,
   onScoreThresholdChange,
 }: SettingsPanelProps) {
+  const [llmModel, setLlmModel] = useState<string>("loading...");
+
+  useEffect(() => {
+    healthCheck()
+      .then((data) => {
+        if (data.llm_model) setLlmModel(data.llm_model as string);
+      })
+      .catch(() => setLlmModel("unavailable"));
+  }, []);
+
   return (
     <div className="border-t border-gray-800">
       <AccordionSection
@@ -97,10 +108,10 @@ export default function SettingsPanel({
       >
         <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-gray-900/50 border border-gray-800">
           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          <span className="text-sm text-gray-300">OpenRouter</span>
+          <span className="text-sm text-gray-300">{llmModel}</span>
         </div>
         <p className="text-[10px] text-gray-600 mt-1.5">
-          Configured via backend environment
+          via OpenRouter
         </p>
       </AccordionSection>
 

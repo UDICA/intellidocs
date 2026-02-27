@@ -22,7 +22,7 @@ class Settings(BaseSettings):
 
     # --- OpenRouter ---
     OPENROUTER_API_KEY: str = ""
-    OPENROUTER_MODEL: str = "anthropic/claude-haiku-4-5-20251001"
+    OPENROUTER_MODEL: str = "anthropic/claude-haiku-4.5"
 
     # --- Embeddings ---
     EMBEDDING_MODEL: str = "all-MiniLM-L6-v2"

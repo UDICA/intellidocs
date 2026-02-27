@@ -7,7 +7,7 @@ def test_config_loads_defaults():
 
     settings = Settings(OPENROUTER_API_KEY="test-key")
     assert settings.OPENROUTER_API_KEY == "test-key"
-    assert settings.OPENROUTER_MODEL == "anthropic/claude-haiku-4-5-20251001"
+    assert settings.OPENROUTER_MODEL == "anthropic/claude-haiku-4.5"
     assert settings.EMBEDDING_MODEL == "all-MiniLM-L6-v2"
     assert settings.RERANKER_MODEL == "cross-encoder/ms-marco-MiniLM-L-6-v2"
     assert settings.QDRANT_HOST == "localhost"

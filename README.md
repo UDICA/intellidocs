@@ -109,7 +109,7 @@ All settings are controlled via environment variables or a `.env` file.
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `OPENROUTER_API_KEY` | — | API key for OpenRouter (required for LLM generation) |
-| `OPENROUTER_MODEL` | `anthropic/claude-haiku-4-5-20251001` | LLM model identifier (any OpenRouter-supported model) |
+| `OPENROUTER_MODEL` | `anthropic/claude-haiku-4.5` | LLM model identifier (any OpenRouter-supported model) |
 | `EMBEDDING_MODEL` | `all-MiniLM-L6-v2` | Sentence-transformers model for embeddings |
 | `RERANKER_MODEL` | `cross-encoder/ms-marco-MiniLM-L-6-v2` | Cross-encoder model for re-ranking |
 | `QDRANT_HOST` | `localhost` | Qdrant server hostname |

@@ -22,13 +22,13 @@ class OpenRouterClient:
 
     Args:
         api_key: OpenRouter API key.
-        model: Model identifier, e.g. ``"anthropic/claude-haiku-4-5-20251001"``.
+        model: Model identifier, e.g. ``"anthropic/claude-haiku-4.5"``.
     """
 
     def __init__(
         self,
         api_key: str,
-        model: str = "anthropic/claude-haiku-4-5-20251001",
+        model: str = "anthropic/claude-haiku-4.5",
     ) -> None:
         self.api_key = api_key
         self.model = model

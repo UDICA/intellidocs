@@ -3,7 +3,8 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends
 
-from backend.src.api.deps import get_embedder, get_vector_store
+from backend.src.api.deps import get_embedder, get_settings, get_vector_store
+from backend.src.config import Settings
 from backend.src.embeddings.embedder import Embedder
 from backend.src.vectorstore.base import VectorStoreBase
 
@@ -14,6 +15,7 @@ router = APIRouter(tags=["health"])
 def health_check(
     vector_store: VectorStoreBase = Depends(get_vector_store),
     embedder: Embedder = Depends(get_embedder),
+    settings: Settings = Depends(get_settings),
 ) -> dict:
     return {
         "status": "healthy",
@@ -22,4 +24,5 @@ def health_check(
         },
         "embedding_model": embedder.model_name,
         "embedding_dimension": embedder.dimension,
+        "llm_model": settings.OPENROUTER_MODEL,
     }
