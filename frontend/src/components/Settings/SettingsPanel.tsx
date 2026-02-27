@@ -97,7 +97,7 @@ export default function SettingsPanel({
       >
         <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-gray-900/50 border border-gray-800">
           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          <span className="text-sm text-gray-300">Ollama (local)</span>
+          <span className="text-sm text-gray-300">OpenRouter</span>
         </div>
         <p className="text-[10px] text-gray-600 mt-1.5">
           Configured via backend environment

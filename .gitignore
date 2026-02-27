@@ -39,3 +39,7 @@ htmlcov/
 
 # Data (keep sample_docs)
 data/uploads/
+
+# Project instructions (local only)
+CLAUDE.md
+docs/plans/

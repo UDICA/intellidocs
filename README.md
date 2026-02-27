@@ -47,7 +47,7 @@ graph LR
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-username/intellidocs.git
+git clone https://github.com/UDICA/intellidocs.git
 cd intellidocs
 
 # 2. Configure environment
