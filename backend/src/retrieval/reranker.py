@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import math
 
 from backend.src.vectorstore.base import SearchResult
 
@@ -52,15 +53,15 @@ class Reranker:
             return []
 
         pairs = [(query, r.content) for r in results]
-        scores = self.model.predict(pairs)
+        raw_scores = self.model.predict(pairs)
 
         scored = [
             SearchResult(
                 content=r.content,
-                score=float(s),
+                score=1.0 / (1.0 + math.exp(-float(s))),
                 metadata=r.metadata,
             )
-            for r, s in zip(results, scores)
+            for r, s in zip(results, raw_scores)
         ]
         scored.sort(key=lambda x: x.score, reverse=True)
         return scored[:top_k]

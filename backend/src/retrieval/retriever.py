@@ -72,7 +72,6 @@ class HybridRetriever:
             dense_vector=dense_vector,
             sparse_vector=sparse_vector,
             top_k=fetch_k,
-            score_threshold=score_threshold,
         )
 
         if not results:
@@ -82,6 +81,10 @@ class HybridRetriever:
             results = self.reranker.rerank(query=query, results=results, top_k=top_k)
         else:
             results = results[:top_k]
+
+        if score_threshold > 0:
+            filtered = [r for r in results if r.score >= score_threshold]
+            results = filtered if filtered else results
 
         logger.info("Retrieved %d results for query: %s", len(results), query[:80])
         return results

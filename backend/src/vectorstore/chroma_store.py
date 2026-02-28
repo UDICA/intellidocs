@@ -76,7 +76,8 @@ class ChromaStore(VectorStoreBase):
         """Query the collection by dense vector similarity.
 
         ChromaDB returns cosine *distance* (0 = identical), so we convert
-        to a similarity score via ``1 - distance``.
+        to a similarity score via ``1 - distance``.  Score filtering is
+        handled by the retriever after re-ranking.
         """
         results = self.collection.query(
             query_embeddings=[dense_vector],
@@ -87,11 +88,10 @@ class ChromaStore(VectorStoreBase):
             for i, doc in enumerate(results["documents"][0]):
                 distance = results["distances"][0][i] if results["distances"] else 0.0
                 score = 1.0 - distance
-                if score >= score_threshold:
-                    metadata = results["metadatas"][0][i] if results["metadatas"] else {}
-                    search_results.append(
-                        SearchResult(content=doc, score=score, metadata=metadata)
-                    )
+                metadata = results["metadatas"][0][i] if results["metadatas"] else {}
+                search_results.append(
+                    SearchResult(content=doc, score=score, metadata=metadata)
+                )
         return search_results
 
     def delete(self, ids: list[str]) -> None:

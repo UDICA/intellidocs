@@ -111,16 +111,16 @@ class QdrantStore(VectorStoreBase):
     ) -> list[SearchResult]:
         """Return the most similar documents ranked by cosine similarity.
 
-        Currently performs dense-only search.  Sparse vector fusion is handled
-        by the retrieval layer which issues separate sparse queries and merges
-        results via Reciprocal Rank Fusion.
+        Score filtering is intentionally NOT applied at this level because
+        ``query_points`` uses raw distance scores whose range depends on the
+        metric and Qdrant version.  The caller (retriever + reranker) is
+        responsible for meaningful score-based filtering after re-ranking.
         """
         results = self.client.query_points(
             collection_name=self.collection_name,
             query=dense_vector,
             using="dense",
             limit=top_k,
-            score_threshold=score_threshold,
         )
 
         return [
